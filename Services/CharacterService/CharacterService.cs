@@ -69,7 +69,12 @@ namespace dotnet_rpg.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var ServiceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            var dbCharacters = await _context.Characters.Where(c => c.User.Id == GetUserId()).ToListAsync();
+            var dbCharacters = await _context.Characters
+                    .Include(c => c.Weapon)
+                    .Include(c => c.CharacterSkill)
+                    .ThenInclude(cs => cs.Skill)
+                    .Where(c => c.User.Id == GetUserId())
+                    .ToListAsync();
             ServiceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return ServiceResponse;
         }
@@ -77,7 +82,12 @@ namespace dotnet_rpg.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var ServiceResponse = new ServiceResponse<GetCharacterDto>();
-            var dbCharacter = await _context.Characters.FirstOrDefaultAsync(c => c.Id == id && c.User.Id == GetUserId());
+            var dbCharacter = await _context.Characters
+                    .Include(c => c.Weapon)
+                    .Include(c => c.CharacterSkill)
+                    .ThenInclude(cs => cs.Skill)
+                    .FirstOrDefaultAsync(c => c.Id == id && c.User.Id == GetUserId());
+                    
             if(dbCharacter != null) ServiceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacter);
             else{
                 ServiceResponse.Sucess = false;
