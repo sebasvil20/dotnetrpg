@@ -1,12 +1,13 @@
-using System.Text.Json.Serialization;
+
+using System.Collections.Generic;
 
 namespace dotnet_rpg.Models
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum RpgClass
+    public class RpgClass
     {
-        Knight, 
-        Mage,
-        Cleric
+        public int Id { get; set; }
+        public string Name { get; set; }
+        List<Skill> Skills {get; set;}
+        List<Character> Characters {get; set;}
     }
 }

@@ -30,6 +30,7 @@ namespace dotnet_rpg.Services.CharacterSkillService
             try{
                 Character character = await _context.Characters
                     .Include(c => c.Weapon)
+                    .Include(c => c.RpgClass)
                     .Include(c => c.CharacterSkill).ThenInclude(cs => cs.Skill)
                     .FirstOrDefaultAsync(c => c.Id == newCharacterSkill.CharacterId &&
                     c.User.Id == int.Parse(_httpContextAccessor.HttpContext.User
@@ -42,11 +43,11 @@ namespace dotnet_rpg.Services.CharacterSkillService
                 }
 
                 Skill skill = await _context.Skills
-                    .FirstOrDefaultAsync(s => s.Id == newCharacterSkill.SkillId);
+                    .FirstOrDefaultAsync(s => s.Id == newCharacterSkill.SkillId && s.RpgClass == character.RpgClass);
                 
                 if(skill == null){
                     ServiceResponse.Sucess = false;
-                    ServiceResponse.Message = "Skill not found.";
+                    ServiceResponse.Message = "Skill not found or Class is not allowed to use this skill.";
                     return ServiceResponse;
                 }
 
@@ -58,12 +59,11 @@ namespace dotnet_rpg.Services.CharacterSkillService
                 await _context.SaveChangesAsync();
 
                 ServiceResponse.Data = _mapper.Map<GetCharacterDto>(character);
-
             }
             
             catch(Exception ex){
                 ServiceResponse.Sucess = false;
-                ServiceResponse.Message = ex.Message;
+                ServiceResponse.Message = "Your character already has that skill";
             }
             return ServiceResponse;
         }

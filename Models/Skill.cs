@@ -7,6 +7,8 @@ namespace dotnet_rpg.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int Damage { get; set; }
+        public int RpgClassId { get; set; }
+        public RpgClass RpgClass { get; set; }
         public List<CharacterSkill> CharacterSkill { get; set; }
     }
 }

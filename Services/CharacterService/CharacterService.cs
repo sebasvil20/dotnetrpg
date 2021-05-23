@@ -35,7 +35,13 @@ namespace dotnet_rpg.Services.CharacterService
 
             await _context.Characters.AddAsync(character);
             await _context.SaveChangesAsync();
-            ServiceResponse.Data = await _context.Characters.Where(c => c.User.Id == GetUserId()).Select(c => _mapper.Map<GetCharacterDto>(c)).ToListAsync();
+            ServiceResponse.Data = await _context.Characters
+                .Include(c => c.RpgClass)
+                .Include(c => c.Weapon)
+                .Include(c => c.CharacterSkill)
+                .Where(c => c.User.Id == GetUserId())
+                .Select(c => _mapper.Map<GetCharacterDto>(c))
+                .ToListAsync();
             return ServiceResponse;
         }
 
@@ -70,6 +76,7 @@ namespace dotnet_rpg.Services.CharacterService
         {
             var ServiceResponse = new ServiceResponse<List<GetCharacterDto>>();
             var dbCharacters = await _context.Characters
+                    .Include(c => c.RpgClass)
                     .Include(c => c.Weapon)
                     .Include(c => c.CharacterSkill)
                     .ThenInclude(cs => cs.Skill)
@@ -83,6 +90,7 @@ namespace dotnet_rpg.Services.CharacterService
         {
             var ServiceResponse = new ServiceResponse<GetCharacterDto>();
             var dbCharacter = await _context.Characters
+                    .Include(c => c.RpgClass)
                     .Include(c => c.Weapon)
                     .Include(c => c.CharacterSkill)
                     .ThenInclude(cs => cs.Skill)
@@ -101,7 +109,12 @@ namespace dotnet_rpg.Services.CharacterService
             var ServiceResponse = new ServiceResponse<GetCharacterDto>();
             try
             {
-                Character character = await _context.Characters.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
+                Character character = await _context.Characters
+                    .Include(c => c.RpgClass)
+                    .Include(c => c.User)
+                    .Include(c => c.Weapon)
+                    .Include(c => c.CharacterSkill)
+                    .FirstOrDefaultAsync(c => c.Id == updatedCharacter.Id);
                 if(character.User.Id == GetUserId()){
 
                     character.Name = updatedCharacter.Name;
@@ -109,7 +122,7 @@ namespace dotnet_rpg.Services.CharacterService
                     character.Strength = updatedCharacter.Strength;
                     character.Defense = updatedCharacter.Defense;
                     character.Intelligence = updatedCharacter.Intelligence;
-                    character.Class = updatedCharacter.Class;
+                    character.RpgClassId = updatedCharacter.RpgClassId;
 
                     _context.Characters.Update(character);
                     await _context.SaveChangesAsync();

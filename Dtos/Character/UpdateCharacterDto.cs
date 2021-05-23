@@ -1,3 +1,4 @@
+using dotnet_rpg.Dtos.RpgClass;
 using dotnet_rpg.Models;
 
 namespace dotnet_rpg.Dtos.Character
@@ -10,6 +11,6 @@ namespace dotnet_rpg.Dtos.Character
         public int Strength { get; set; } = 10;
         public int Defense { get; set; } = 10;
         public int Intelligence { get; set; } = 10;
-        public RpgClass Class { get; set; } = RpgClass.Knight;
+        public int RpgClassId { get; set; }
 }
 }

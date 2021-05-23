@@ -10,7 +10,8 @@ namespace dotnet_rpg.Models
         public int Strength { get; set; } = 10;
         public int Defense { get; set; } = 10;
         public int Intelligence { get; set; } = 10;
-        public RpgClass Class { get; set; } = RpgClass.Knight;
+        public int RpgClassId { get; set; }
+        public RpgClass RpgClass { get; set; }
         public User User { get; set; }
         public Weapon Weapon { get; set; }
         public List<CharacterSkill> CharacterSkill { get; set; }
