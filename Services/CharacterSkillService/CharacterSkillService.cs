@@ -61,7 +61,7 @@ namespace dotnet_rpg.Services.CharacterSkillService
                 ServiceResponse.Data = _mapper.Map<GetCharacterDto>(character);
             }
             
-            catch(Exception ex){
+            catch(Exception){
                 ServiceResponse.Sucess = false;
                 ServiceResponse.Message = "Your character already has that skill";
             }
